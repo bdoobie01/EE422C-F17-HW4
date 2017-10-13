@@ -13,6 +13,7 @@ package assignment4;
  */
 
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 /* see the PDF for descriptions of the methods and fields in this class
@@ -58,6 +59,18 @@ public abstract class Critter {
 	}
 	
 	protected final void reproduce(Critter offspring, int direction) {
+		//Made by Brian
+		
+		Class cn = offspring.getClass();
+		try{
+		Constructor constructor = cn.getConstructor();
+		Critter newBaby = (Critter) constructor.newInstance();
+		newBaby.energy = offspring.energy/2;
+		
+		babies.add(newBaby);		}
+		catch(Exception e){
+			return;
+		}
 	}
 
 	public abstract void doTimeStep();
@@ -73,7 +86,22 @@ public abstract class Critter {
 	 * @param critter_class_name
 	 * @throws InvalidCritterException
 	 */
-	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
+	public static void makeCritter(String critter_class_name) throws InvalidCritterException {	
+		//Made by Brian
+		try{
+			
+		Class cc = Class.forName(critter_class_name);
+		Constructor constructor  = cc.getConstructor();
+		Critter newCrit = (Critter)constructor.newInstance();
+		newCrit.energy = Params.start_energy;
+		
+		}
+		catch (Exception e){
+			throw new InvalidCritterException(critter_class_name);
+		}
+		
+		
+		
 	}
 	
 	/**
@@ -177,5 +205,35 @@ public abstract class Critter {
 	
 	public static void displayWorld() {
 		// Complete this method.
+		// Made by Brian
+		
+		System.out.print("+");
+		for(int i=0; i<Params.world_width; i++){
+			System.out.print("-");
+		}
+		System.out.println("+");
+		
+		for (int j = 0; j<Params.world_height; j++){
+			System.out.print("|");
+			for(int i = 0; i<Params.world_width; i++){
+				Boolean found = false;
+				for(int w = 0; w<population.size(); w++){
+					if(population.get(w).x_coord == i && population.get(w).y_coord == j && !found){
+						System.out.print(population.get(w).toString());
+						found = true;
+					}
+				}
+				if(!found){
+					System.out.print(" ");
+				}
+			}
+			System.out.println("|");
+		}
+		
+		System.out.print("+");
+		for(int i=0; i<Params.world_width; i++){
+			System.out.print("-");
+		}
+		System.out.println("+");
 	}
 }
