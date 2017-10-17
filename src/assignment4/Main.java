@@ -68,6 +68,23 @@ public class Main {
 
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
+        // TODO complete main
+
+        //Prompt the user for input
+        System.out.println("Welcome to Critters!");
+        boolean playing = true;
+        while (playing) {
+            //commands are quit, show, step, seed, make, or stats
+            String command = kb.nextLine();
+            // TODO will this catch multiple bad inputs?
+            try {
+                String commandRoot = getCommandRoot(command);
+            } catch (InvalidCommandException invalidCommand) {
+                System.out.println(invalidCommand);
+                command = kb.nextLine();
+            }
+
+        }
         
         // System.out.println("GLHF");
         
@@ -75,4 +92,22 @@ public class Main {
         System.out.flush();
 
     }
+
+    /**
+     * This method returns the root command keyword from the command
+     * @author Turan Vural
+     * @return quit, show, step, seed, make, or stats
+     */
+    private static String getCommandRoot(String command) throws InvalidCommandException {
+        if(command.contains("quit")) {return "quit";}
+        if(command.contains("show")) {return "show";}
+        if(command.contains("step")) {return "step";}
+        if(command.contains("seed")) {return "seed";}
+        if(command.contains("make")) {return "make";}
+        if(command.contains("stats")) {return "stats";}
+
+        throw new InvalidCommandException(command);
+    }
+
+
 }
