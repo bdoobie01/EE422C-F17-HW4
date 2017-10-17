@@ -86,13 +86,14 @@ public abstract class Critter {
 	 * @throws InvalidCritterException
 	 */
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {	
-		//Made by Brian
+		//Made by Brian & Turan Vural
 		try{
 			
 		Class cc = Class.forName(critter_class_name);
-		Constructor constructor  = cc.getConstructor();
+		Constructor constructor = cc.getConstructor();
 		Critter newCrit = (Critter)constructor.newInstance();
 		newCrit.energy = Params.start_energy;
+		newCrit.population.add(newCrit); //add this critter to the population NOT DONE IN CONSTRUCTOR
 		
 		}
 		catch (Exception e){
@@ -202,6 +203,11 @@ public abstract class Critter {
 	public static void worldTimeStep() {
 		// Complete this method.
 		// TODO Complete this method
+
+		//doTimeStep for each critter in population
+		for (Critter cc : population) {
+			cc.doTimeStep();
+		}
 	}
 	
 	public static void displayWorld() {

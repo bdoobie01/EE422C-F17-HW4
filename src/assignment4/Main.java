@@ -22,12 +22,12 @@ import java.io.*;
  */
 public class Main {
 
-    static Scanner kb;	// scanner connected to keyboard input, or input file
-    private static String inputFile;	// input file, used instead of keyboard input if specified
-    static ByteArrayOutputStream testOutputString;	// if test specified, holds all console output
-    private static String myPackage;	// package of Critter file.  Critter cannot be in default pkg.
+    static Scanner kb;    // scanner connected to keyboard input, or input file
+    private static String inputFile;    // input file, used instead of keyboard input if specified
+    static ByteArrayOutputStream testOutputString;    // if test specified, holds all console output
+    private static String myPackage;    // package of Critter file.  Critter cannot be in default pkg.
     private static boolean DEBUG = false; // Use it or not, as you wish!
-    static PrintStream old = System.out;	// if you want to restore output to console
+    static PrintStream old = System.out;    // if you want to restore output to console
 
 
     // Gets the package name.  The usage assumes that Critter and its subclasses are all in the same package.
@@ -37,14 +37,15 @@ public class Main {
 
     /**
      * Main method.
-     * @param args args can be empty.  If not empty, provide two parameters -- the first is a file name, 
-     * and the second is test (for test output, where all output to be directed to a String), or nothing.
+     *
+     * @param args args can be empty.  If not empty, provide two parameters -- the first is a file name,
+     *             and the second is test (for test output, where all output to be directed to a String), or nothing.
      */
-    public static void main(String[] args) { 
+    public static void main(String[] args) {
         if (args.length != 0) {
             try {
                 inputFile = args[0];
-                kb = new Scanner(new File(inputFile));			
+                kb = new Scanner(new File(inputFile));
             } catch (FileNotFoundException e) {
                 System.out.println("USAGE: java Main OR java Main <input file> <test output>");
                 e.printStackTrace();
@@ -72,20 +73,84 @@ public class Main {
 
         //Prompt the user for input
         System.out.println("Welcome to Critters!");
+
+        Critter critter = new Critter() {
+            @Override
+            public void doTimeStep() {
+
+            }
+
+            @Override
+            public boolean fight(String oponent) {
+                return false;
+            }
+        };
+
         boolean playing = true;
         while (playing) {
             //commands are quit, show, step, seed, make, or stats
             String command = kb.nextLine();
+            String [] commandParts = command.split("\\s+");
+            String commandRoot = null;
             // TODO will this catch multiple bad inputs?
-            try {
-                String commandRoot = getCommandRoot(command);
-            } catch (InvalidCommandException invalidCommand) {
-                System.out.println(invalidCommand);
-                command = kb.nextLine();
+            while (commandRoot.equals(null)) {
+                try {
+                    commandRoot = getCommandRoot(command);
+                } catch (InvalidCommandException invalidCommand) {
+                    System.out.println(invalidCommand);
+                    command = kb.nextLine();
+                }
+            }
+
+            //decide which command was given
+            switch (commandRoot) {
+                // TODO does this "quit" statement play well with the others?
+                case "quit" :
+                    playing = false;
+                    continue;
+
+                case "show" :
+                    // TODO consult with partner over implementation of this method
+
+
+                    critter.displayWorld();
+                    break;
+
+                case "step" :
+                    //TODO complete doTimeStep implementation
+                    for (Critter c : critter.population) {
+
+                    }
+                    break;
+
+                case "seed" :
+                    break;
+
+                case "make" :
+                    break;
+
+                case "stats" :
+                    try {
+
+                        String requestedCritter = commandParts[1];
+                        Class c = Class.forName(requestedCritter);
+                        Critter newCrit = (Critter) c.getConstructor().newInstance();
+
+                        Critter statsCritter;
+                        critter.runStats(); // how to pass restricted variables into these methods?
+
+                    } catch (Exception e) {
+                        if (e instanceof InvalidCommandException || e instanceof InvalidCritterException) {
+                            System.out.println("error processing " + command);
+                        }
+                        System.out.println("ERROR UNACCOUNTED EXCEPTION");
+                    }
+                    break;
+
             }
 
         }
-        
+
         // System.out.println("GLHF");
         
         /* Write your code above */
@@ -95,16 +160,29 @@ public class Main {
 
     /**
      * This method returns the root command keyword from the command
-     * @author Turan Vural
+     *
      * @return quit, show, step, seed, make, or stats
+     * @author Turan Vural
      */
     private static String getCommandRoot(String command) throws InvalidCommandException {
-        if(command.contains("quit")) {return "quit";}
-        if(command.contains("show")) {return "show";}
-        if(command.contains("step")) {return "step";}
-        if(command.contains("seed")) {return "seed";}
-        if(command.contains("make")) {return "make";}
-        if(command.contains("stats")) {return "stats";}
+        if (command.contains("quit")) {
+            return "quit";
+        }
+        if (command.contains("show")) {
+            return "show";
+        }
+        if (command.contains("step")) {
+            return "step";
+        }
+        if (command.contains("seed")) {
+            return "seed";
+        }
+        if (command.contains("make")) {
+            return "make";
+        }
+        if (command.contains("stats")) {
+            return "stats";
+        }
 
         throw new InvalidCommandException(command);
     }
