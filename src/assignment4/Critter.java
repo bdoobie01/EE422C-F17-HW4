@@ -196,10 +196,12 @@ public abstract class Critter {
 	 */
 	public static void clearWorld() {
 		// Complete this method.
+		// TODO complete this method
 	}
 	
 	public static void worldTimeStep() {
 		// Complete this method.
+		// TODO Complete this method
 	}
 	
 	public static void displayWorld() {
