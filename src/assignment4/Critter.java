@@ -12,6 +12,7 @@ package assignment4;
  */
 
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
 import java.util.List;
 
 /* see the PDF for descriptions of the methods and fields in this class
@@ -22,7 +23,9 @@ import java.util.List;
 public abstract class Critter {
 	private static String myPackage;
 	private static List<Critter> population = new java.util.ArrayList<Critter>();
+	// private static HashMap xPop = new HashMap<Integer, List<Critter>>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
+	private Boolean hasMoved = false;
 
 	// Gets the package name. This assumes that Critter and its subclasses are
 	// all in the same package.
@@ -33,6 +36,9 @@ public abstract class Critter {
 	private static java.util.Random rand = new java.util.Random();
 
 	public static int getRandomInt(int max) {
+		if(max<=0){
+			return 0;
+		}
 		return rand.nextInt(max);
 	}
 
@@ -59,78 +65,82 @@ public abstract class Critter {
 
 	protected final void walk(int direction) {
 		energy -= Params.walk_energy_cost;
-		switch (direction) {
-		case 0:
-			x_coord += 1;
-			if (x_coord >= Params.world_width) {
-				x_coord = 0;
+		if (!hasMoved) {
+			hasMoved = true;
+			switch (direction) {
+			case 0:
+				x_coord += 1;
+				if (x_coord >= Params.world_width) {
+					x_coord = 0;
+				}
+				break;
+			case 1:
+				x_coord += 1;
+				y_coord -= 1;
+				if (x_coord >= Params.world_width) {
+					x_coord = 0;
+				}
+				if (y_coord < 0) {
+					y_coord = Params.world_height - 1;
+				}
+				break;
+			case 2:
+				y_coord -= 1;
+				if (y_coord < 0) {
+					y_coord = Params.world_height - 1;
+				}
+				break;
+			case 3:
+				x_coord -= 1;
+				y_coord -= 1;
+				if (x_coord < 0) {
+					x_coord = Params.world_width - 1;
+				}
+				if (y_coord < 0) {
+					y_coord = Params.world_height - 1;
+				}
+				break;
+			case 4:
+				x_coord -= 1;
+				if (x_coord < 0) {
+					x_coord = Params.world_width - 1;
+				}
+				break;
+			case 5:
+				x_coord -= 1;
+				y_coord += 1;
+				if (x_coord < 0) {
+					x_coord = Params.world_width - 1;
+				}
+				if (y_coord >= Params.world_height) {
+					y_coord = 0;
+				}
+				break;
+			case 6:
+				y_coord += 1;
+				if (y_coord >= Params.world_height) {
+					y_coord = 0;
+				}
+				break;
+			case 7:
+				x_coord += 1;
+				y_coord += 1;
+				if (x_coord >= Params.world_width) {
+					x_coord = 0;
+				}
+				if (y_coord >= Params.world_height) {
+					y_coord = 0;
+				}
+
+				break;
+			default:
+				break;
 			}
-			break;
-		case 1:
-			x_coord += 1;
-			y_coord -= 1;
-			if (x_coord >= Params.world_width) {
-				x_coord = 0;
-			}
-			if (y_coord < 0) {
-				y_coord = Params.world_height - 1;
-			}
-			break;
-		case 2:
-			y_coord -= 1;
-			if (y_coord < 0) {
-				y_coord = Params.world_height - 1;
-			}
-			break;
-		case 3:
-			x_coord -= 1;
-			y_coord -= 1;
-			if (x_coord < 0) {
-				x_coord = Params.world_width - 1;
-			}
-			if (y_coord < 0) {
-				y_coord = Params.world_height - 1;
-			}
-			break;
-		case 4:
-			x_coord -= 1;
-			if (x_coord < 0) {
-				x_coord = Params.world_width - 1;
-			}
-			break;
-		case 5:
-			x_coord -= 1;
-			y_coord += 1;
-			if (x_coord < 0) {
-				x_coord = Params.world_width - 1;
-			}
-			if (y_coord >= Params.world_height) {
-				y_coord = 0;
-			}
-			break;
-		case 6:
-			y_coord += 1;
-			if (y_coord >= Params.world_height) {
-				y_coord = 0;
-			}
-			break;
-		case 7:
-			x_coord += 1;
-			y_coord += 1;
-			if (x_coord >= Params.world_width) {
-				x_coord = 0;
-			}
-			if (y_coord >= Params.world_height) {
-				y_coord = 0;
-			}
-			break;
-		default:
-			break;
 		}
 	}
 
 	protected final void run(int direction) {
-		energy += 2*Params.walk_energy_cost;
+		energy += 2 * Params.walk_energy_cost;
 		energy -= Params.run_energy_cost;
 		walk(direction);
 		walk(direction);
@@ -217,11 +227,7 @@ public abstract class Critter {
 				}
 			}
 		} catch (Exception e) {
-			if (e instanceof InvalidCritterException) {
-				throw new InvalidCritterException(critter_class_name);
-			} else {
-				System.out.println(e);
-			}
+			throw new InvalidCritterException(critter_class_name);
 		}
 		return result;
 	}
@@ -311,6 +317,7 @@ public abstract class Critter {
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
+		babies.clear();
 		population.clear();
 		// Complete this method.
 		// TODO complete this method
@@ -320,15 +327,83 @@ public abstract class Critter {
 		// Complete this method.
 		// TODO Complete this method
 
+		// Reset movement tracker, deduct rest energy
+		for (Critter cc : population) {
+			cc.hasMoved = false;
+			cc.energy -= Params.rest_energy_cost;
+		}
+
 		// doTimeStep for each critter in population
 		for (Critter cc : population) {
 			cc.doTimeStep();
 		}
+		// Process encounters
+		fightCritters();
+		// Clear dead critters
+		for (int i = 0; i < population.size(); i++) {
+			if (population.get(i).energy <= 0) {
+				population.remove(i);
+			}
+		}
+		
+		//Make Algae
+		for(int i =0;i<Params.refresh_algae_count;i++){
+			Algae alg = new Algae();
+			alg.setEnergy(Params.start_energy);
+			alg.setX_coord(getRandomInt(Params.world_width-1));
+			alg.setY_coord(getRandomInt(Params.world_height-1));
+			population.add(alg);
+		}
+		
+		// Add babies
+				for (Critter cc : babies) {
+					population.add(cc);
+				}
+				babies.clear();
 	}
 
-	/**
-	 * Displays a text world to the console
-	 */
+	private static void fightCritters() {
+		for (Critter a : population) {
+			if (a.energy >= 0) {
+				for (Critter b : population) {
+					if (b.energy >= 0) {
+						if ((a.x_coord == b.x_coord) && (a.y_coord == b.y_coord) && (a!=b)) {
+							Boolean aF = a.fight(b.toString());
+							Boolean bF = b.fight(a.toString());
+							if((aF && bF) || ((a.x_coord == b.x_coord) && (a.y_coord == b.y_coord))){
+								
+								int aRoll = getRandomInt(a.energy);
+								if(a.toString().equals("@")){
+									aRoll = 0;
+								}
+								
+								int bRoll = getRandomInt(b.energy);
+								if(b.toString().equals("@")){
+									bRoll = 0;
+								}
+								
+								if(aRoll>=bRoll){
+									if(b.energy < 0){
+										b.energy =0;
+									}
+									a.energy += (.5)*b.energy;
+									b.energy = 0;
+								}
+								else{
+									if(a.energy < 0){
+										a.energy = 0;
+									}
+									b.energy += (.5)*a.energy;
+									a.energy = 0;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	public static void displayWorld() {
 		// Complete this method.
 		// Made by Brian
@@ -347,6 +422,7 @@ public abstract class Critter {
 					if (population.get(w).x_coord == i && population.get(w).y_coord == j && !found) {
 						System.out.print(population.get(w).toString());
 						found = true;
+						break;
 					}
 				}
 				if (!found) {
