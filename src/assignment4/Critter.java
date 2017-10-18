@@ -217,7 +217,11 @@ public abstract class Critter {
 				}
 			}
 		} catch (Exception e) {
-			throw new InvalidCritterException(critter_class_name);
+			if (e instanceof InvalidCritterException) {
+				throw new InvalidCritterException(critter_class_name);
+			} else {
+				System.out.println(e);
+			}
 		}
 		return result;
 	}
@@ -322,6 +326,9 @@ public abstract class Critter {
 		}
 	}
 
+	/**
+	 * Displays a text world to the console
+	 */
 	public static void displayWorld() {
 		// Complete this method.
 		// Made by Brian
