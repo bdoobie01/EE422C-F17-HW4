@@ -76,7 +76,6 @@ public class Main {
 
 		/* Do not alter the code above for your submission. */
         /* Write your code below. */
-        // TODO complete main
 
         // Prompt the user for input
         System.out.println("Welcome to Critters!");
@@ -88,38 +87,64 @@ public class Main {
             String[] commandParts = command.split("\\s+");
             String commandRoot = null;
             // TODO will this catch multiple bad inputs?
-            while (commandRoot == null) {
+            //while (commandRoot == null) {
                 try {
                     commandRoot = getCommandRoot(commandParts[0]);
                 } catch (InvalidCommandException invalidCommand) {
                     System.out.println(invalidCommand);
-                    command = kb.nextLine();
+                    continue;
                 }
-            }
+            //}
 
             // decide which command was given
             switch (commandRoot) {
                 // TODO does this "quit" statement play well with the others?
                 case "quit":
+                    //command should only be "quit"
+                    if(commandParts.length > 1) {
+                        try{
+                            throw new InvalidCommandException(command);
+                        } catch (Exception e) {
+                            System.out.println(e);
+                            continue;
+                        }
+                    }
                     playing = false;
                     continue;
 
                 case "show":
-                    // TODO consult with partner over implementation of this method
-
+                    //command should only be "show"
+                    if(commandParts.length > 1) {
+                        try{
+                            throw new InvalidCommandException(command);
+                        } catch (Exception e) {
+                            System.out.println(e);
+                            continue;
+                        }
+                    }
                     Critter.displayWorld();
                     break;
 
                 case "step":
                     //check for number after step
                     int steps = 1;
-                    if (commandParts[1] != null) {
+                    //command length at most two
+                    if(commandParts.length > 2) {
                         try {
-                            steps = Integer.parseInt(commandParts[1]);
-                        } catch (Exception e) {
-                            System.out.println("error processing " + command);
+                            throw new InvalidCommandException(command);
+                        } catch (InvalidCommandException e) {
+                            System.out.println(e);
+                            continue;
                         }
                     }
+                    if (commandParts[1] != null) {
+                        try {
+                            steps = cleanNumbers(command, 1);
+                        } catch (Exception e) {
+                            System.out.println("error processing: " + command);
+                        }
+                    }
+                    //if errors occur, world will take one step
                     for(int i = 0; i < steps; i++) {
                         Critter.worldTimeStep();
                     }
@@ -127,54 +152,55 @@ public class Main {
 
                 case "seed":
                     try {
-                        int num = Integer.parseInt(commandParts[1]);
+                        int num = cleanNumbers(command,1);
                         Critter.setSeed(num);
                     } catch (Exception e) {
-                        System.out.println("error processing " + command);
+                        System.out.println("error processing: " + command);
                     }
                     break;
 
                 case "make":
+                    // TODO catch bad class names
                     try {
+                        //if two words, make one new object
                         if (commandParts.length == 2) {
-                            Critter.makeCritter(commandParts[1]);
+                            try {
+                                Critter.makeCritter(commandParts[1]);
+                            } catch (Exception e) {
+                                System.out.println(new InvalidCommandException(command));
+                            }
                         } else {
-                            int num = Integer.parseInt(commandParts[2]);
+                            //if three words, make multiple of the new object
+                            if(commandParts.length != 3) {throw new InvalidCommandException(command);}
+                            int num = cleanNumbers(command,2);
                             for (int i = 0; i < num; i++) {
                                 Critter.makeCritter(commandParts[1]);
                             }
                         }
                     } catch (Exception e) {
-                        System.out.println("error processing " + command);
-                        System.out.println("ERROR UNACCOUNTED EXCEPTION");
+                        System.out.println("error processing: " + command);
                     }
 
                     break;
 
                 case "stats":
+                    // TODO catch bad input after "stats"
                     try {
 
                         String requestedCritter = commandParts[1];
-                        // Class c = Class.forName(requestedCritter);
-                        // Critter newCrit = (Critter)
-                        // c.getConstructor().newInstance();
-
-                        // Critter statsCritter;
-                        Critter.runStats(Critter.getInstances(requestedCritter)); // how
-                        // to
-                        // pass
-                        // restricted
-                        // variables
-                        // into
-                        // these
-                        // methods?
+                        // how to pass restricted variables into these methods?
+                        Critter.runStats(Critter.getInstances(requestedCritter));
 
                     } catch (Exception e) {
                         if (e instanceof InvalidCommandException || e instanceof InvalidCritterException) {
-                            System.out.println("error processing " + command);
+                            System.out.println("error processing: " + command);
                         }
                         System.out.println("ERROR UNACCOUNTED EXCEPTION");
                     }
+                    break;
+
+                default:
+                    System.out.println("error processing: " + command);
                     break;
 
             }
@@ -217,4 +243,25 @@ public class Main {
         throw new InvalidCommandException(command);
     }
 
+
+    /**
+     * This method takes the number field of the input and checks its validity
+     * @author Turan Vural
+     * @param command command string from user
+     * @param index index of integer
+     * @throws InvalidCommandException
+     */
+    private static int cleanNumbers(String command, int index) throws InvalidCommandException {
+        String [] tokens = command.split("//s+");
+        String number = tokens[index];
+        int num = Integer.parseInt(number);
+        double length = Math.ceil(Math.log(num));
+
+        //if it is a dirty string, throw an InvalidCommandException
+        if(length != number.length()) {
+            throw new InvalidCommandException(command);
+        } else {
+            return num;
+        }
+    }
 }

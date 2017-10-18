@@ -18,7 +18,5 @@ public class InvalidCommandException extends Exception {
        invalidCommand = c;
     }
 
-    public String toString() {
-        return "invalid command: " + invalidCommand;
-    }
+    public String toString() { return "error processing: " + invalidCommand; }
 }
