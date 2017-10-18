@@ -63,6 +63,7 @@ public abstract class Critter {
 	private int x_coord;
 	private int y_coord;
 
+	//TODO Javadoc
 	protected final void walk(int direction) {
 		energy -= Params.walk_energy_cost;
 		if (!hasMoved) {
@@ -139,10 +140,14 @@ public abstract class Critter {
 		}
 	}
 
+	/**
+	 * This method walks the Critter twice and adjust the Critter's energy
+	 * @param direction
+	 */
 	protected final void run(int direction) {
-		energy += 2 * Params.walk_energy_cost;
-		energy -= Params.run_energy_cost;
-		walk(direction);
+		energy += 2 * Params.walk_energy_cost; //add two walk  energies, to be subtracted during walk()
+		energy -= Params.run_energy_cost; //subtract the run energy
+		walk(direction); //walk twice, energy is cancelled out with first line
 		walk(direction);
 	}
 
@@ -177,7 +182,7 @@ public abstract class Critter {
 	 * @throws InvalidCritterException
 	 */
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
-		// Made by Brian & Turan Vural
+		// Made by Brianf & Turan Vural
 		try {
 
 			Class<?> cc = Class.forName("assignment4." + critter_class_name);
@@ -319,13 +324,10 @@ public abstract class Critter {
 	public static void clearWorld() {
 		babies.clear();
 		population.clear();
-		// Complete this method.
-		// TODO complete this method
 	}
 
 	public static void worldTimeStep() {
 		// Complete this method.
-		// TODO Complete this method
 
 		// Reset movement tracker, deduct rest energy
 		for (Critter cc : population) {
@@ -337,8 +339,10 @@ public abstract class Critter {
 		for (Critter cc : population) {
 			cc.doTimeStep();
 		}
+
 		// Process encounters
 		fightCritters();
+
 		// Clear dead critters
 		for (int i = 0; i < population.size(); i++) {
 			if (population.get(i).energy <= 0) {
@@ -363,15 +367,22 @@ public abstract class Critter {
 	}
 
 	private static void fightCritters() {
+		//for not dead Critter a
 		for (Critter a : population) {
 			if (a.energy >= 0) {
+				//for not dead critter b
 				for (Critter b : population) {
 					if (b.energy >= 0) {
+						//if the two critters are on the same place and are not the same
 						if ((a.x_coord == b.x_coord) && (a.y_coord == b.y_coord) && (a!=b)) {
+							//checks if the critters want to fight
 							Boolean aF = a.fight(b.toString());
 							Boolean bF = b.fight(a.toString());
+
+							//if they do want to fight
 							if((aF && bF) || ((a.x_coord == b.x_coord) && (a.y_coord == b.y_coord))){
-								
+
+								//if Algae roll 0
 								int aRoll = getRandomInt(a.energy);
 								if(a.toString().equals("@")){
 									aRoll = 0;
@@ -381,10 +392,12 @@ public abstract class Critter {
 								if(b.toString().equals("@")){
 									bRoll = 0;
 								}
-								
+
+								//checks to see who wins, a wins ties
+								//adds half energy to the winning critter
 								if(aRoll>=bRoll){
-									if(b.energy < 0){
-										b.energy =0;
+									if(b.energy < 0) {
+										b.energy = 0;
 									}
 									a.energy += (.5)*b.energy;
 									b.energy = 0;

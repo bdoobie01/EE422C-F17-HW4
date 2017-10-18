@@ -11,6 +11,7 @@ package assignment4;
  * Fall 2016
  */
 
+import java.util.List;
 import java.util.Scanner;
 import java.io.*;
 import java.lang.reflect.Method;
@@ -86,19 +87,15 @@ public class Main {
             String command = kb.nextLine();
             String[] commandParts = command.split("\\s+");
             String commandRoot = null;
-            // TODO will this catch multiple bad inputs?
-            //while (commandRoot == null) {
             try {
                 commandRoot = getCommandRoot(commandParts[0]);
             } catch (InvalidCommandException invalidCommand) {
                 System.out.println(invalidCommand);
                 continue;
             }
-            //}
 
             // decide which command was given
             switch (commandRoot) {
-                // TODO does this "quit" statement play well with the others?
                 case "quit":
                     //command should only be "quit"
                     if (commandParts.length > 1) {
@@ -137,7 +134,7 @@ public class Main {
                             continue;
                         }
                     }
-                    if (commandParts[1] != null) {
+                    if (commandParts.length >= 2) {
                         try {
                             steps = cleanNumbers(command, 1);
                         } catch (Exception e) {
@@ -160,14 +157,13 @@ public class Main {
                     break;
 
                 case "make":
-                    // TODO catch bad class names
                     //if two words, make one new object
                     if (commandParts.length == 2) {
                         try {
                             Critter.makeCritter(commandParts[1]);
                         } catch (Throwable throwable) {
                             if (throwable instanceof InvalidCritterException) {
-                                System.out.println(new InvalidCommandException(command));
+                                System.out.println((new InvalidCommandException(command)).toString());
                             } else {
                                 System.out.println("error processing: " + command);
                             }
@@ -176,7 +172,7 @@ public class Main {
                         try {
                             //if three words, make multiple of the new object
                             if (commandParts.length != 3) {
-                                new InvalidCommandException(command);
+                                throw(new InvalidCommandException(command));
                             }
                             int num = cleanNumbers(command, 2);
                             for (int i = 0; i < num; i++) {
@@ -184,7 +180,7 @@ public class Main {
                             }
                         } catch (Throwable throwable) {
                             if (throwable instanceof InvalidCritterException) {
-                                System.out.println(new InvalidCommandException(command));
+                                System.out.println((new InvalidCommandException(command)).toString());
                             } else {
                                 System.out.println("error processing: " + command);
                             }
@@ -194,18 +190,36 @@ public class Main {
                     break;
 
                 case "stats":
-                    // TODO catch bad input after "stats"
                     try {
-
+                        //get class object for critter
                         String requestedCritter = commandParts[1];
-                        //Class<?> crit = Class.forName("assignment4."+ commandParts[1]);
-                        Critter.runStats(Critter.getInstances(requestedCritter));
+                        Class<?> c = Class.forName("assignment4." + requestedCritter);
 
-                    } catch (Exception e) {
-                        //if (e instanceof InvalidCommandException || e instanceof InvalidCritterException) {
+                        //get the list of c's instances in the world
+                        List<Critter> cList = Critter.getInstances(requestedCritter);
+                        Class [] cArg = new Class[1];
+                        cArg[0] = cList.getClass();
+
+                        Class<?> input = Critter.getInstances(requestedCritter).getClass();
+
+                        try {
+                            //get c's runStats
+                            Method runStatsRequested = c.getMethod("runStats", List.class);
+                            runStatsRequested.invoke(c, cList);
+                        } catch(Throwable throwable) {
+                            //if c does not have a runStats, run Critter's runStats
+                            System.err.println(throwable.toString());
+                            Critter.runStats(cList);
+                        }
+                        //if there is an instance of c,
+                        if(!cList.isEmpty()) {
+
+                        } else {
+                            Critter.runStats(Critter.getInstances(requestedCritter));
+                        }
+                    } catch (Throwable throwable) {
                         System.out.println("error processing: " + command);
-                        //}
-                        //System.out.println("ERROR UNACCOUNTED EXCEPTION: " + e);
+                        System.err.println(throwable.toString());
                     }
                     break;
 
