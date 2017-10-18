@@ -58,10 +58,82 @@ public abstract class Critter {
 	private int y_coord;
 
 	protected final void walk(int direction) {
+		energy -= Params.walk_energy_cost;
+		switch (direction) {
+		case 0:
+			x_coord += 1;
+			if (x_coord >= Params.world_width) {
+				x_coord = 0;
+			}
+			break;
+		case 1:
+			x_coord += 1;
+			y_coord -= 1;
+			if (x_coord >= Params.world_width) {
+				x_coord = 0;
+			}
+			if (y_coord < 0) {
+				y_coord = Params.world_height - 1;
+			}
+			break;
+		case 2:
+			y_coord -= 1;
+			if (y_coord < 0) {
+				y_coord = Params.world_height - 1;
+			}
+			break;
+		case 3:
+			x_coord -= 1;
+			y_coord -= 1;
+			if (x_coord < 0) {
+				x_coord = Params.world_width - 1;
+			}
+			if (y_coord < 0) {
+				y_coord = Params.world_height - 1;
+			}
+			break;
+		case 4:
+			x_coord -= 1;
+			if (x_coord < 0) {
+				x_coord = Params.world_width - 1;
+			}
+			break;
+		case 5:
+			x_coord -= 1;
+			y_coord += 1;
+			if (x_coord < 0) {
+				x_coord = Params.world_width - 1;
+			}
+			if (y_coord >= Params.world_height) {
+				y_coord = 0;
+			}
+			break;
+		case 6:
+			y_coord += 1;
+			if (y_coord >= Params.world_height) {
+				y_coord = 0;
+			}
+			break;
+		case 7:
+			x_coord += 1;
+			y_coord += 1;
+			if (x_coord >= Params.world_width) {
+				x_coord = 0;
+			}
+			if (y_coord >= Params.world_height) {
+				y_coord = 0;
+			}
+			break;
+		default:
+			break;
+		}
 	}
 
 	protected final void run(int direction) {
-
+		energy += 2*Params.walk_energy_cost;
+		energy -= Params.run_energy_cost;
+		walk(direction);
+		walk(direction);
 	}
 
 	protected final void reproduce(Critter offspring, int direction) {
@@ -102,20 +174,20 @@ public abstract class Critter {
 			Constructor<?> constructor = cc.getConstructor();
 			Critter newCrit = (Critter) constructor.newInstance();
 			newCrit.energy = Params.start_energy;
-			
+
 			Boolean empty = false;
-			while(!empty){
+			while (!empty) {
 
 				newCrit.x_coord = getRandomInt(Params.world_width);
 				newCrit.y_coord = getRandomInt(Params.world_height);
 				Boolean isEmpty = true;
-				for(Critter c : population){
-					if((c.x_coord == newCrit.x_coord) && (c.y_coord == newCrit.y_coord)){
+				for (Critter c : population) {
+					if ((c.x_coord == newCrit.x_coord) && (c.y_coord == newCrit.y_coord)) {
 						isEmpty = false;
 						break;
 					}
 				}
-				
+
 				empty = isEmpty;
 			}
 			population.add(newCrit); // add this critter to the population NOT
@@ -139,7 +211,7 @@ public abstract class Critter {
 		List<Critter> result = new java.util.ArrayList<Critter>();
 		try {
 			for (Critter c : population) {
-				Class<?> crit = Class.forName(critter_class_name);
+				Class<?> crit = Class.forName("assignment4." + critter_class_name);
 				if (c.getClass().equals(crit)) {
 					result.add(c);
 				}
