@@ -172,7 +172,7 @@ public class Main {
                         try {
                             //if three words, make multiple of the new object
                             if (commandParts.length != 3) {
-                                throw(new InvalidCommandException(command));
+                                throw (new InvalidCommandException(command));
                             }
                             int num = cleanNumbers(command, 2);
                             for (int i = 0; i < num; i++) {
@@ -197,26 +197,23 @@ public class Main {
 
                         //get the list of c's instances in the world
                         List<Critter> cList = Critter.getInstances(requestedCritter);
-                        Class [] cArg = new Class[1];
-                        cArg[0] = cList.getClass();
+                        //Class [] cArg = new Class[1];
+                        //cArg[0] = cList.getClass();
 
-                        Class<?> input = Critter.getInstances(requestedCritter).getClass();
+                        //Class<?> input = Critter.getInstances(requestedCritter).getClass();
 
                         try {
                             //get c's runStats
                             Method runStatsRequested = c.getMethod("runStats", List.class);
                             runStatsRequested.invoke(c, cList);
-                        } catch(Throwable throwable) {
+                            break;
+                        } catch (Throwable throwable) {
                             //if c does not have a runStats, run Critter's runStats
                             System.err.println(throwable.toString());
                             Critter.runStats(cList);
                         }
-                        //if there is an instance of c,
-                        if(!cList.isEmpty()) {
-
-                        } else {
-                            Critter.runStats(Critter.getInstances(requestedCritter));
-                        }
+                        //if the requestedCritter's runClass didn't run, run Critter's runClass
+                        Critter.runStats(Critter.getInstances(requestedCritter));
                     } catch (Throwable throwable) {
                         System.out.println("error processing: " + command);
                         System.err.println(throwable.toString());
@@ -283,7 +280,7 @@ public class Main {
         double length = Math.log10(num);
 
         //if it is a dirty string, throw an InvalidCommandException
-        if ( (int) (length + 1) != number.length()) {
+        if ((int) (length + 1) != number.length()) {
             throw new InvalidCommandException(command);
         } else {
             return num;
