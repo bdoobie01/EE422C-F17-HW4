@@ -134,11 +134,12 @@ public class Main {
                             continue;
                         }
                     }
-                    if (commandParts.length >= 2) {
+                    if (commandParts.length == 2) {
                         try {
                             steps = cleanNumbers(command, 1);
                         } catch (Exception e) {
                             System.out.println("error processing: " + command);
+                            continue;
                         }
                     }
                     //if errors occur, world will take one step

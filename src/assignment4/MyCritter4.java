@@ -26,6 +26,11 @@ import assignment4.Critter.TestCritter;
 public class MyCritter4 extends TestCritter {
 
 	private static int mileage;
+	private static int totalMembers = 0;
+
+	public MyCritter4() {
+		totalMembers++;
+	}
 
 	/**
 	 * 1. walk
@@ -70,15 +75,30 @@ public class MyCritter4 extends TestCritter {
 	}
 
 	public static void runStats(java.util.List<Critter> bikers) {
+		String status = "";
+		String future = "";
+		String past = "";
+		String age = "";
+
 		int strength = 0;
 		for (Critter b : bikers) {
 			strength += b.getEnergy();
 		}
 
+		if(bikers.size() == 0) {
+			status = "We had a good ride. The open road goes on.";
+			future = "We have no more miles in our tanks.";
+			past = "We saw " + mileage + " miles of road.";
+		} else {
+			status = "We are " + bikers.size() + " bikers strong!";
+			future = "We have " + strength + " miles in our tanks and " + totalMembers + " bikers on the road!";
+			past = "We have seen " + mileage + " miles of road!";
+		}
+
 		System.out.println("This is our biker gang!");
-		System.out.println("We are " + bikers.size() + " bikers strong!");
-		System.out.println("We have " + strength + " miles in our tanks!");
-		System.out.println("We have seen " + mileage + " miles of road!");
+		System.out.println(status);
+		System.out.println(future);
+		System.out.println(past);
 	}
 
 	@Override

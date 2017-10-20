@@ -13,7 +13,9 @@ package assignment4;
 
 
 import assignment4.Critter;
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
+import java.util.Random;
 
 
 /**
@@ -26,21 +28,78 @@ import assignment4.Critter;
  */
 public class MyCritter3 extends Critter {
 
-	boolean tripped;
-	int [] mobility;
+    private static Random r;
 
-	@Override
-	public void doTimeStep() {
-	}
+    private boolean tripped;
+    private boolean[] mobility;
 
-	@Override
-	public boolean fight(String opponent) {
-		run(getRandomInt(8));
-		return false;
-	}
+    public MyCritter3() {
 
-	@Override
-	public String toString() {
-		return "3";
-	}
+        //instantiate variables
+        if(r == null) {
+            r = new Random();
+        }
+        tripped = false;
+        mobility = new boolean[8];
+
+        //set random directions
+        boolean canMove = false;
+        while (!canMove) {
+            for (int i = 0; i < 8; i++) {
+                boolean b = (r.nextInt(2) == 0);
+                mobility[i] = b;
+                canMove |= b;
+            }
+        }
+    }
+
+    public MyCritter3(boolean[] m) {
+        if (r == null) {
+            r = new Random();
+        }
+        tripped = false;
+        mobility = m;
+    }
+
+    /**
+     * 1. walk
+     * 2. run
+     * 3. reproduce
+     */
+    @Override
+    public void doTimeStep() {
+        if (!tripped) {
+            run(getRunDirection());
+        } else {
+
+            if (getEnergy() > Params.min_reproduce_energy) {
+                MyCritter3 littleLemmy = new MyCritter3(mobility);
+                reproduce(littleLemmy, 8);
+            } else {
+                tripped = true;
+            }
+        }
+    }
+
+    private int getRunDirection() {
+        int i = 0;
+        boolean hasDirection = false;
+        while (!hasDirection) {
+            i = (r.nextInt(8));
+            hasDirection |= mobility[i];
+        }
+        return  i;
+    }
+
+    @Override
+    public boolean fight(String opponent) {
+        run(getRunDirection());
+        tripped = true;
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "3";
+    }
 }
