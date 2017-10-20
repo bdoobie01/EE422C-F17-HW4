@@ -150,7 +150,7 @@ public abstract class Critter {
 			
 		}
 		else{
-			System.err.println("Critter is exhausted");
+			//System.err.println("Critter is exhausted");
 		}
 	}
 
@@ -202,7 +202,6 @@ public abstract class Critter {
 	 * @throws InvalidCritterException
 	 */
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
-		// Made by Brian & Turan Vural
 		try {
 
 			Class<?> cc = Class.forName("assignment4." + critter_class_name);
@@ -372,9 +371,9 @@ public abstract class Critter {
 		}
 		babies.clear();
 		
-		System.err.println("");
-		System.err.println("----------------------------------------------------");
-		System.err.println("");
+		//System.err.println("");
+		//System.err.println("----------------------------------------------------");
+		//System.err.println("");
 	}
 
 	private static void fightCritters() {
@@ -384,13 +383,13 @@ public abstract class Critter {
 				for (Critter b : population) {
 					if (b.energy > 0) {
 						if ((a.x_coord == b.x_coord) && (a.y_coord == b.y_coord) && (a != b)) {
-							System.err.println(a.toString() + " encounters " + b.toString());
+							//System.err.println(a.toString() + " encounters " + b.toString());
 							Boolean aF = a.fight(b.toString());
-							System.err.println("aF is " + aF);
+							//System.err.println("aF is " + aF);
 							Boolean bF = b.fight(a.toString());
-							System.err.println("bF is " + bF);
+							//System.err.println("bF is " + bF);
 							if ((aF && bF) || ((a.x_coord == b.x_coord) && (a.y_coord == b.y_coord))) {
-								System.err.println(a.toString() + ", energy " + a.energy + " fighting " + b.toString() + ", energy " +  b.energy);
+								//System.err.println(a.toString() + ", energy " + a.energy + " fighting " + b.toString() + ", energy " +  b.energy);
 								int aRoll = getRandomInt(a.energy);
 								if (a.toString().equals("@")) {
 									aRoll = 0;
@@ -401,8 +400,8 @@ public abstract class Critter {
 									bRoll = 0;
 								}
 								
-								System.err.println("a rolls " + aRoll);
-								System.err.println("b rolls " + bRoll);
+								//System.err.println("a rolls " + aRoll);
+								//System.err.println("b rolls " + bRoll);
 								
 								if (aRoll >= bRoll) {
 									if (b.energy < 0) {
@@ -410,17 +409,17 @@ public abstract class Critter {
 									}
 									a.energy += (.5) * b.energy;
 									b.energy = 0;
-									System.err.println("a wins, energy is now " + a.energy + " , " + b.energy);
+									//System.err.println("a wins, energy is now " + a.energy + " , " + b.energy);
 								} else {
 									if (a.energy < 0) {
 										a.energy = 0;
 									}
 									b.energy += (.5) * a.energy;
 									a.energy = 0;
-									System.err.println("b wins, energy is now " + a.energy + " , " + b.energy);
+									//System.err.println("b wins, energy is now " + a.energy + " , " + b.energy);
 									
 								}
-								System.err.println("");
+								//System.err.println("");
 							}
 						}
 					}

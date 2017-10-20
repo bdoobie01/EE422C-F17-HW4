@@ -1,5 +1,5 @@
 package assignment4;
-/* CRITTERS MyCritter3.java
+/* CRITTERS Critter3.java
  * EE422C Project 4 submission by
  * Turan Vural
  * tzv57
@@ -23,12 +23,12 @@ import assignment4.Critter.TestCritter;
  * It will run while it can.
  * When its energy reaches 1/4 of start_energy, it stops running and reproduces.
  */
-public class MyCritter4 extends TestCritter {
+public class Critter4 extends TestCritter {
 
 	private static int mileage;
 	private static int totalMembers = 0;
 
-	public MyCritter4() {
+	public Critter4() {
 		totalMembers++;
 	}
 
@@ -41,7 +41,7 @@ public class MyCritter4 extends TestCritter {
 	public void doTimeStep() {
 		//reproduce if energy > start_energy
 		if(getEnergy() > Params.start_energy && getEnergy() > Params.min_reproduce_energy) {
-			MyCritter4 child = new MyCritter4();
+			Critter4 child = new Critter4();
 			reproduce(child, (getEnergy()+4)%8);
 		}
 		//run if energy is > 1/4 start

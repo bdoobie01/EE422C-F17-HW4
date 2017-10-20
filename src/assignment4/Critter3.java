@@ -1,5 +1,5 @@
 package assignment4;
-/* CRITTERS MyCritter3.java
+/* CRITTERS Critter3.java
  * EE422C Project 4 submission by
  * Turan Vural
  * tzv57
@@ -11,12 +11,9 @@ package assignment4;
  * Fall 2016
  */
 
-
 import assignment4.Critter;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
 import java.util.Random;
-
 
 /**
  * @author Turan Vural
@@ -26,14 +23,14 @@ import java.util.Random;
  * These Lemmings are Lame, meaning that depending on birth it will only be able to move a certain range of directions.
  * This Critter only wants to eat algae.
  */
-public class MyCritter3 extends Critter {
+public class Critter3 extends Critter {
 
     private static Random r;
 
     private boolean tripped;
     private boolean[] mobility;
 
-    public MyCritter3() {
+    public Critter3() {
 
         //instantiate variables
         if(r == null) {
@@ -53,7 +50,7 @@ public class MyCritter3 extends Critter {
         }
     }
 
-    public MyCritter3(boolean[] m) {
+    public Critter3(boolean[] m) {
         if (r == null) {
             r = new Random();
         }
@@ -73,7 +70,7 @@ public class MyCritter3 extends Critter {
         } else {
 
             if (getEnergy() > Params.min_reproduce_energy) {
-                MyCritter3 littleLemmy = new MyCritter3(mobility);
+                Critter3 littleLemmy = new Critter3(mobility);
                 reproduce(littleLemmy, 8);
             } else {
                 tripped = true;
@@ -95,7 +92,7 @@ public class MyCritter3 extends Critter {
     public boolean fight(String opponent) {
         run(getRunDirection());
         tripped = true;
-        return false;
+        return opponent.equals("Algae");
     }
 
     @Override

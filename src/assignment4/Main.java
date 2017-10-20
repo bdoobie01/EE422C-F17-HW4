@@ -196,12 +196,15 @@ public class Main {
                         String requestedCritter = commandParts[1];
                         Class<?> c = Class.forName("assignment4." + requestedCritter);
 
+                        try {
+                            Critter critter = (Critter) c.getConstructor().newInstance();
+                        } catch (Throwable throwable) {
+                            System.err.println(throwable.toString());
+                            System.out.println("error processing: " + command);
+                            continue;
+                        }
                         //get the list of c's instances in the world
                         List<Critter> cList = Critter.getInstances(requestedCritter);
-                        //Class [] cArg = new Class[1];
-                        //cArg[0] = cList.getClass();
-
-                        //Class<?> input = Critter.getInstances(requestedCritter).getClass();
 
                         try {
                             //get c's runStats
@@ -229,8 +232,6 @@ public class Main {
 
         }
 
-        // System.out.println("GLHF");
-
 		/* Write your code above */
         System.out.flush();
 
@@ -240,7 +241,6 @@ public class Main {
      * This method returns the root command keyword from the command
      *
      * @return quit, show, step, seed, make, or stats
-     * @author Turan Vural
      */
     private static String getCommandRoot(String command) throws InvalidCommandException {
         if (command.contains("quit")) {
@@ -272,7 +272,6 @@ public class Main {
      * @param command command string from user
      * @param index   index of integer
      * @throws InvalidCommandException
-     * @author Turan Vural
      */
     private static int cleanNumbers(String command, int index) throws InvalidCommandException {
         String[] tokens = command.split("\\s+");
