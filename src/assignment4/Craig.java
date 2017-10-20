@@ -1,5 +1,6 @@
 package assignment4;
 
+import java.lang.reflect.Method;
 
 /*
  * Example critter
@@ -54,6 +55,7 @@ public class Craig extends Critter {
 		
 		dir = (dir + turn) % 8;
 	}
+	
 
 	public static void runStats(java.util.List<Critter> craigs) {
 		int total_straight = 0;

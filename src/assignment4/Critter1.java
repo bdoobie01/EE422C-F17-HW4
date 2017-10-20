@@ -5,23 +5,23 @@ import java.util.*;
  * 
  * @author Brian
  * 
- * BigBelly is fat and lazy. It does not like to expend energy, so it will not move if it is not hungry. Each BigBelly has its own energy threshold. If it is above that energy
+ * Critter1 is fat and lazy. It does not like to expend energy, so it will not move if it is not hungry. Each Critter1 has its own energy threshold. If it is above that energy
  * threshold, it will not move. If it is below that energy threshold, it has a 25% of getting off of its butt and moving one space forward. BigBellies will not change direction 
  * ever. They will move in the same direction until they die. They will take any fight (everything is possibly food after all), unless they are critically low on energy. In this 
  * case they will try to take one step backwards to escape the fight. They will not run from Algae.
  * 
- * BigBelly does not like to reproduce, as he must give away a lot of energy to do so. He will wait until he has a wealth of energy to reproduce.
+ * Critter1 does not like to reproduce, as he must give away a lot of energy to do so. He will wait until he has a wealth of energy to reproduce.
  */
 
-public class BigBelly extends Critter.TestCritter {
+public class Critter1 extends Critter.TestCritter {
 
 	private int energyThreshold;
 	private int dir;
 
-	public BigBelly() {
+	public Critter1() {
 		energyThreshold = (int) (1.25 * (double) Params.start_energy);
 		int genVar = getRandomInt(50);
-		int upDown = getRandomInt(1);
+		int upDown = getRandomInt(2);
 		if (upDown == 0) {
 			energyThreshold = energyThreshold + genVar;
 		} else {
@@ -37,9 +37,9 @@ public class BigBelly extends Critter.TestCritter {
 	public void doTimeStep() {
 		// Reproduce
 		if ((getEnergy() > 3 * Params.start_energy) && (getEnergy() > Params.min_reproduce_energy)) {
-			BigBelly child = new BigBelly();
+			Critter1 child = new Critter1();
 			int genVar = getRandomInt(20);
-			int upDown = getRandomInt(1);
+			int upDown = getRandomInt(2);
 			if (upDown == 0) {
 				child.energyThreshold = energyThreshold + genVar;
 			} else {
@@ -48,14 +48,14 @@ public class BigBelly extends Critter.TestCritter {
 					child.energyThreshold=0;
 				}
 			}
-			reproduce(child, getRandomInt(7));
+			reproduce(child, getRandomInt(8));
 		}
 
 		// Walk
 		if (getEnergy() >= energyThreshold) {
 			return;
 		} else {
-			int moveChance = getRandomInt(3);
+			int moveChance = getRandomInt(4);
 			if (moveChance == 0) {
 				walk(dir);
 			}
@@ -78,7 +78,7 @@ public class BigBelly extends Critter.TestCritter {
 	}
 
 	public String toString() {
-		return "<";
+		return "1";
 	}
 	
 	public static void runStats(java.util.List<Critter> bellies){
@@ -87,7 +87,7 @@ public class BigBelly extends Critter.TestCritter {
 		int eT101t150 = 0;
 		int eT150up = 0;
 		for(Object c : bellies){
-			BigBelly b = (BigBelly) c;
+			Critter1 b = (Critter1) c;
 			if(b.energyThreshold<=50){
 				eT0t50 ++;
 			}
