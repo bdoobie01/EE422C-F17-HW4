@@ -143,7 +143,7 @@ public abstract class Critter {
 			}
 			if (inFight) {
 				for (Critter cc : population) {
-					if ((cc.x_coord == x_coord) && (cc.y_coord == y_coord) && (cc != this) && (cc.energy>0)) {
+					if ((cc.x_coord == x_coord) && (cc.y_coord == y_coord) && (cc != this) && (cc.energy > 0)) {
 						x_coord = startX;
 						y_coord = startY;
 					}
@@ -169,25 +169,26 @@ public abstract class Critter {
 
 	protected final void reproduce(Critter offspring, int direction) {
 		// Made by Brian
-
-		offspring.x_coord = x_coord;
-		offspring.y_coord = y_coord;
-		Boolean nowInFight = inFight;
-		inFight = false;
-		offspring.walk(direction);
-		inFight = nowInFight;
-		offspring.energy = energy / 2;
-		int x = energy % 2;
-		if (x > 0) {
-			energy = (energy / 2) + 1;
-		} else {
-			energy = energy / 2;
+		if (getEnergy() >= Params.min_reproduce_energy) {
+			offspring.x_coord = x_coord;
+			offspring.y_coord = y_coord;
+			Boolean nowInFight = inFight;
+			inFight = false;
+			offspring.walk(direction);
+			inFight = nowInFight;
+			offspring.energy = energy / 2;
+			int x = energy % 2;
+			if (x > 0) {
+				energy = (energy / 2) + 1;
+			} else {
+				energy = energy / 2;
+			}
+			babies.add(offspring);
+			System.err.println(toString() + " just pooped out a baby, congrats!");
+			System.err.println("Parent energy = " + energy);
+			System.err.println("Baby energy = " + offspring.energy);
+			System.err.println("");
 		}
-		babies.add(offspring);
-		System.err.println(toString() + " just pooped out a baby, congrats!");
-		System.err.println("Parent energy = " + energy);
-		System.err.println("Baby energy = " + offspring.energy);
-		System.err.println("");
 	}
 
 	public abstract void doTimeStep();
@@ -209,7 +210,7 @@ public abstract class Critter {
 		// Made by Brian & Turan Vural
 		try {
 
-			Class<?> cc = Class.forName("assignment4." + critter_class_name);
+			Class<?> cc = Class.forName(myPackage + "." + critter_class_name);
 			Constructor<?> constructor = cc.getConstructor();
 			Critter newCrit = (Critter) constructor.newInstance();
 			newCrit.energy = Params.start_energy;
@@ -237,7 +238,7 @@ public abstract class Critter {
 		List<Critter> result = new java.util.ArrayList<Critter>();
 		try {
 			for (Critter c : population) {
-				Class<?> crit = Class.forName("assignment4." + critter_class_name);
+				Class<?> crit = Class.forName(myPackage + "." + critter_class_name);
 				if (c.getClass().equals(crit)) {
 					result.add(c);
 				}
@@ -366,11 +367,11 @@ public abstract class Critter {
 
 			}
 		}
-		for(int i=0;i<Params.world_width;i++){
-			if(xPop.containsKey(i)){
-				List<Critter> xList=xPop.get(i);
-				for(int j=0;j<xList.size();j++){
-					if(xList.get(j).energy<=0){
+		for (int i = 0; i < Params.world_width; i++) {
+			if (xPop.containsKey(i)) {
+				List<Critter> xList = xPop.get(i);
+				for (int j = 0; j < xList.size(); j++) {
+					if (xList.get(j).energy <= 0) {
 						xList.remove(j);
 						j--;
 					}
@@ -386,7 +387,7 @@ public abstract class Critter {
 			alg.setX_coord(getRandomInt(Params.world_width));
 			alg.setY_coord(getRandomInt(Params.world_height));
 			population.add(alg);
-			//mapAdd(alg);
+			// mapAdd(alg);
 		}
 
 		// Add babies
@@ -404,9 +405,11 @@ public abstract class Critter {
 	private static void fightCritters() {
 		inFight = true;
 		for (List<Critter> xList : xPop.values()) {
-			for (Critter a : xList) {
+			for (int k=0;k<xList.size();k++) {
+				Critter a = xList.get(k);
 				if (a.energy > 0) {
-					for (Critter b : xList) {
+					for (int l=0;l<xList.size();l++) {
+						Critter b = xList.get(l);
 						if (b.energy > 0) {
 							if ((a.x_coord == b.x_coord) && (a.y_coord == b.y_coord) && (a != b)) {
 								System.err.println(a.toString() + " encounters " + b.toString());
@@ -540,7 +543,7 @@ public abstract class Critter {
 		for (int j = 0; j < Params.world_height; j++) {
 			if (xPop.containsKey(j)) {
 				List<Critter> xList = xPop.get(j);
-				if(xList.contains(c)){
+				if (xList.contains(c)) {
 					xList.remove(c);
 				}
 			}

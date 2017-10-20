@@ -194,7 +194,7 @@ public class Main {
                     try {
                         //get class object for critter
                         String requestedCritter = commandParts[1];
-                        Class<?> c = Class.forName("assignment4." + requestedCritter);
+                        Class<?> c = Class.forName(myPackage + "." + requestedCritter);
 
                         try {
                             Critter critter = (Critter) c.getConstructor().newInstance();

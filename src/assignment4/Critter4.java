@@ -11,7 +11,7 @@ package assignment4;
  * Fall 2016
  */
 
-import assignment4.Critter.TestCritter;
+import assignment4.Critter;
 
 
 
@@ -23,7 +23,7 @@ import assignment4.Critter.TestCritter;
  * It will run while it can.
  * When its energy reaches 1/4 of start_energy, it stops running and reproduces.
  */
-public class Critter4 extends TestCritter {
+public class Critter4 extends Critter {
 
 	private static int mileage;
 	private static int totalMembers = 0;
