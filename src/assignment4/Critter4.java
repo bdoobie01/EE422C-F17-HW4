@@ -15,13 +15,12 @@ import assignment4.Critter;
 
 
 
-/**
- * @author Turan Vural
- * This Critter is a biker.
+/**This Critter is a iker.
  * It will not attack that of its own.
  * It will reproduce if its energy gets above start energy.
  * It will run while it can.
  * When its energy reaches 1/4 of start_energy, it stops running and reproduces.
+ *  @author Turan Vural
  */
 public class Critter4 extends Critter {
 
@@ -33,9 +32,7 @@ public class Critter4 extends Critter {
 	}
 
 	/**
-	 * 1. walk
-	 * 2. run
-	 * 3. reproduce
+	 * time step algorithm for Critter4 - reproduces if above start energy, runs until energy is 1/4 of start, walks otherwise
 	 */
 	@Override
 	public void doTimeStep() {
@@ -56,6 +53,11 @@ public class Critter4 extends Critter {
 		}
 	}
 
+	/**
+	 * fight method for Critter4 - will fight anything except its own, when weak it only fights Algae
+	 * @param opponent Critter type of the opponent
+	 * @return true for fight, false for run
+	 */
 	@Override
 	public boolean fight(String opponent) {
 		//don't fight its own
@@ -74,6 +76,10 @@ public class Critter4 extends Critter {
 		return true;
 	}
 
+	/**
+	 * Prints information about the Critter4s in the environment
+	 * @param bikers list of Critter4s in the environment
+	 */
 	public static void runStats(java.util.List<Critter> bikers) {
 		String status = "";
 		String future = "";
@@ -101,6 +107,10 @@ public class Critter4 extends Critter {
 		System.out.println(past);
 	}
 
+	/**
+	 * toString method for Critter4
+	 * @return "4"
+	 */
 	@Override
 	public String toString () {
 		return "4";

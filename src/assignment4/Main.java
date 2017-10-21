@@ -41,7 +41,7 @@ public class Main {
     }
 
     /**
-     * Main method.
+     * Main method. Takes input from the user and processes it in coordination with Critter.java
      *
      * @param args args can be empty. If not empty, provide two parameters -- the
      *             first is a file name, and the second is test (for test output,
@@ -79,11 +79,12 @@ public class Main {
         /* Write your code below. */
 
         // Prompt the user for input
-        System.out.println("Welcome to Critters!");
+        //System.out.println("Welcome to Critters!");
 
         boolean playing = true;
         while (playing) {
             // commands are quit, show, step, seed, make, or stats
+            //System.out.println("Enter command:");
             String command = kb.nextLine();
             String[] commandParts = command.split("\\s+");
             String commandRoot = null;
@@ -286,4 +287,5 @@ public class Main {
             return num;
         }
     }
+
 }

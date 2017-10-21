@@ -1,4 +1,15 @@
 package assignment4;
+/* CRITTERS Critter2.java
+ * EE422C Project 4 submission by
+ * Turan Vural
+ * tzv57
+ * 16275
+ * Brian Dubbert
+ * bpd397
+ * 16290
+ * Slip days used: 1
+ * Fall 2016
+ */
 
 import assignment4.Critter;
 
@@ -17,14 +28,20 @@ public class Critter2 extends Critter {
 	private static int totalFightBabies = 0;
 	private int myFightBabies;
 	private static int totalDoubleBirths = 0;
-	
+
+	/**
+	 * Critter2 constructor
+	 */
 	public Critter2(){
 		runOn = runOnSetter;
 		runOnSetter = !runOnSetter;
 		dir = getRandomInt(8);
 		myFightBabies = 0;
 	}
-	
+
+	/**
+	 * time step algorithm for Critter. Will walk every other time step
+	 */
 	@Override
 	public void doTimeStep() {
 		dir = getRandomInt(8);
@@ -34,6 +51,12 @@ public class Critter2 extends Critter {
 		runOn = !runOn;
 	}
 
+	/**
+	 * Fight algorithm for Critter2. Eats algae, will fight if it thinks it will win, will not fight another Critter2.
+	 * Uses reproduction and running as escape techniques.
+	 * @param opponent name of the type of Critter it is fighting
+	 * @return true for fight, false otherwise
+	 */
 	@Override
 	public boolean fight(String opponent) {
 		if(opponent.toString().equals(new Algae().toString())){
@@ -67,11 +90,19 @@ public class Critter2 extends Critter {
 		return false;
 	}
 
+	/**
+	 * toString method for Critter2
+	 * @return "2"
+	 */
 	@Override
 	public String toString () {
 		return "2";
 	}
-	
+
+	/**
+	 * Prints statistics of the Critter2s in the environment
+	 * @param crits list of Critter2s in the environment
+	 */
 	public static void runStats(java.util.List<Critter> crits){
 		int maxBabies = 0;
 		int maxEnergy = 0;

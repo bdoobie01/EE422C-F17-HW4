@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class Critter {
 	private static String myPackage;
 	private static List<Critter> population = new java.util.ArrayList<Critter>();
-	private static HashMap<Integer, List<Critter>> xPop = new HashMap<Integer, List<Critter>>();
+	private static HashMap<Integer, List<Critter>> yPop = new HashMap<Integer, List<Critter>>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
 	private Boolean hasMoved = false;
 	private static Boolean inFight = false;
@@ -38,6 +38,11 @@ public abstract class Critter {
 
 	private static java.util.Random rand = new java.util.Random();
 
+	/**
+	 * Returns a random integer
+	 * @param max maximum random integer, non-inclusive
+	 * @return random integer
+	 */
 	public static int getRandomInt(int max) {
 		if (max <= 0) {
 			return 0;
@@ -45,6 +50,10 @@ public abstract class Critter {
 		return rand.nextInt(max);
 	}
 
+	/**
+	 * sets a new Random seed
+	 * @param new_seed seed to be set
+	 */
 	public static void setSeed(long new_seed) {
 		rand = new java.util.Random(new_seed);
 	}
@@ -66,6 +75,10 @@ public abstract class Critter {
 	private int x_coord;
 	private int y_coord;
 
+	/**
+	 * Walk algorithm for Critter
+	 * @param direction direction to walk in, 0-8
+	 */
 	protected final void walk(int direction) {
 		energy -= Params.walk_energy_cost;
 		int startX = x_coord;
@@ -151,14 +164,18 @@ public abstract class Critter {
 			}
 
 		} else {
-			System.err.println("Critter is exhausted");
+			// System.err.println("Critter is exhausted");
 		}
-		// Prevent Concurrent Mod Error
+		// Prevent Concurre// nt Mod Error
 		if (!inFight) {
 			mapChange(this);
 		}
 	}
 
+	/**
+	 * Run algorithm for the Critter - equivalent of two walks in one step of time
+	 * @param direction direction to move, 0-8
+	 */
 	protected final void run(int direction) {
 		energy += 2 * Params.walk_energy_cost;
 		energy -= Params.run_energy_cost;
@@ -167,8 +184,12 @@ public abstract class Critter {
 		walk(direction);
 	}
 
+	/**
+	 * Reproduction method of a Critter
+	 * @param offspring Critter to be brought into the environment
+	 * @param direction Direction of the new Critter to be placed in relation to its parent, 0-8
+	 */
 	protected final void reproduce(Critter offspring, int direction) {
-		// Made by Brian
 		if (getEnergy() >= Params.min_reproduce_energy) {
 			offspring.x_coord = x_coord;
 			offspring.y_coord = y_coord;
@@ -184,10 +205,10 @@ public abstract class Critter {
 				energy = energy / 2;
 			}
 			babies.add(offspring);
-			System.err.println(toString() + " just pooped out a baby, congrats!");
-			System.err.println("Parent energy = " + energy);
-			System.err.println("Baby energy = " + offspring.energy);
-			System.err.println("");
+			// System.err.println(toString() + " just pooped out a baby, congrats!");
+			// System.err.println("Parent energy = " + energy);
+			// System.err.println("Baby energy = " + offspring.energy);
+			// System.err.println("");
 		}
 	}
 
@@ -200,14 +221,13 @@ public abstract class Critter {
 	 * unqualified name of a concrete subclass of Critter, if not, an
 	 * InvalidCritterException must be thrown. (Java weirdness: Exception
 	 * throwing does not work properly if the parameter has lower-case instead
-	 * of upper. For example, if craig is supplied instead of Craig, an error is
+	 * of upper. For example, if craig is supplied instead of Cra// ig, an error is
 	 * thrown instead of an Exception.)
 	 * 
-	 * @param critter_class_name
-	 * @throws InvalidCritterException
+	 * @param critter_class_name name of Critter class to be made
+	 * @throws InvalidCritterException thrown if invalid Critter is given
 	 */
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
-		// Made by Brian & Turan Vural
 		try {
 
 			Class<?> cc = Class.forName(myPackage + "." + critter_class_name);
@@ -338,11 +358,14 @@ public abstract class Critter {
 	public static void clearWorld() {
 		babies.clear();
 		population.clear();
-		xPop.clear();
+		yPop.clear();
 		// Complete this method.
 		// TODO complete this method
 	}
 
+	/**
+	 * Step function for time across the world
+	 */
 	public static void worldTimeStep() {
 		// Complete this method.
 		// TODO Complete this method
@@ -368,8 +391,8 @@ public abstract class Critter {
 			}
 		}
 		for (int i = 0; i < Params.world_width; i++) {
-			if (xPop.containsKey(i)) {
-				List<Critter> xList = xPop.get(i);
+			if (yPop.containsKey(i)) {
+				List<Critter> xList = yPop.get(i);
 				for (int j = 0; j < xList.size(); j++) {
 					if (xList.get(j).energy <= 0) {
 						xList.remove(j);
@@ -397,14 +420,17 @@ public abstract class Critter {
 		}
 		babies.clear();
 
-		System.err.println("");
-		System.err.println("--------------END OF STEP " + stepCount + "------------------");
-		System.err.println("");
+		// System.err.println("");
+		// System.err.println("--------------END OF STEP " + stepCount + "------------------");
+		// System.err.println("");
 	}
 
+	/**
+	 * Fighting algorithm for the Critters of the world
+	 */
 	private static void fightCritters() {
 		inFight = true;
-		for (List<Critter> xList : xPop.values()) {
+		for (List<Critter> xList : yPop.values()) {
 			for (int k=0;k<xList.size();k++) {
 				Critter a = xList.get(k);
 				if (a.energy > 0) {
@@ -412,14 +438,14 @@ public abstract class Critter {
 						Critter b = xList.get(l);
 						if (b.energy > 0) {
 							if ((a.x_coord == b.x_coord) && (a.y_coord == b.y_coord) && (a != b)) {
-								System.err.println(a.toString() + " encounters " + b.toString());
+								// System.err.println(a.toString() + " encounters " + b.toString());
 								Boolean aF = a.fight(b.toString());
-								System.err.println("aF is " + aF);
+								// System.err.println("aF is " + aF);
 								Boolean bF = b.fight(a.toString());
-								System.err.println("bF is " + bF);
+								// System.err.println("bF is " + bF);
 								if ((aF && bF) || ((a.x_coord == b.x_coord) && (a.y_coord == b.y_coord))) {
-									System.err.println(a.toString() + ", energy " + a.energy + " fighting "
-											+ b.toString() + ", energy " + b.energy);
+									// System.err.println(a.toString() + ", energy " + a.energy + " fighting "
+									// + b.toString() + ", energy " + b.energy);
 									int aRoll = getRandomInt(a.energy);
 									if (a.toString().equals("@")) {
 										aRoll = 0;
@@ -430,8 +456,8 @@ public abstract class Critter {
 										bRoll = 0;
 									}
 
-									System.err.println("a rolls " + aRoll);
-									System.err.println("b rolls " + bRoll);
+									// System.err.println("a rolls " + aRoll);
+									// System.err.println("b rolls " + bRoll);
 
 									if (aRoll >= bRoll) {
 										if (b.energy < 0) {
@@ -439,17 +465,17 @@ public abstract class Critter {
 										}
 										a.energy += (.5) * b.energy;
 										b.energy = 0;
-										System.err.println("a wins, energy is now " + a.energy + " , " + b.energy);
+										// System.err.println("a wins, energy is now " + a.energy + " , " + b.energy);
 									} else {
 										if (a.energy < 0) {
 											a.energy = 0;
 										}
 										b.energy += (.5) * a.energy;
 										a.energy = 0;
-										System.err.println("b wins, energy is now " + a.energy + " , " + b.energy);
+										// System.err.println("b wins, energy is now " + a.energy + " , " + b.energy);
 
 									}
-									System.err.println("");
+									// System.err.println("");
 								}
 							}
 						}
@@ -458,13 +484,14 @@ public abstract class Critter {
 			}
 		}
 		mapRefresh();
-		System.err.println("");
+		// System.err.println("");
 		inFight = false;
 	}
 
+	/**
+	 * Outputs a textual representation of the world to the console
+	 */
 	public static void displayWorld() {
-		// Complete this method.
-		// Made by Brian
 
 		System.out.print("+");
 		for (int i = 0; i < Params.world_width; i++) {
@@ -472,31 +499,12 @@ public abstract class Critter {
 		}
 		System.out.println("+");
 
-		// for (int j = 0; j < Params.world_height; j++) {
-		// System.out.print("|");
-		// for (int i = 0; i < Params.world_width; i++) {
-		// Boolean found = false;
-		// for (int w = 0; w < population.size(); w++) {
-		// if (population.get(w).x_coord == i && population.get(w).y_coord == j
-		// && !found) {
-		// System.out.print(population.get(w).toString());
-		// found = true;
-		// break;
-		// }
-		// }
-		// if (!found) {
-		// System.out.print(" ");
-		// }
-		// }
-		// System.out.println("|");
-		// }
-
 		for (int j = 0; j < Params.world_height; j++) {
 			System.out.print("|");
-			if (xPop.containsKey(j)) {
+			if (yPop.containsKey(j)) {
 				for (int i = 0; i < Params.world_width; i++) {
 					Boolean found = false;
-					for (Critter c : xPop.get(j)) {
+					for (Critter c : yPop.get(j)) {
 						if (c.x_coord == i) {
 							System.out.print(c.toString());
 							found = true;
@@ -523,26 +531,38 @@ public abstract class Critter {
 		System.out.println("+");
 	}
 
+	/**
+	 * Adds a Critter to the map
+	 * @param c Critter to be added to the map
+	 */
 	private static void mapAdd(Critter c) {
-		if (xPop.containsKey(c.y_coord)) {
-			xPop.get(c.y_coord).add(c);
+		if (yPop.containsKey(c.y_coord)) {
+			yPop.get(c.y_coord).add(c);
 		} else {
 			List<Critter> xList = new ArrayList<Critter>();
 			xList.add(c);
-			xPop.put(c.y_coord, xList);
+			yPop.put(c.y_coord, xList);
 		}
 	}
 
+	/**
+	 * Updates the location of the Critter in the map data structure
+	 * @param c
+	 */
 	private static void mapChange(Critter c) {
 		mapRemove(c);
 		mapAdd(c);
 	}
 
+	/**
+	 * Removes a Critter from the map
+	 * @param c Critter to be removed
+	 */
 	private static void mapRemove(Critter c) {
 
 		for (int j = 0; j < Params.world_height; j++) {
-			if (xPop.containsKey(j)) {
-				List<Critter> xList = xPop.get(j);
+			if (yPop.containsKey(j)) {
+				List<Critter> xList = yPop.get(j);
 				if (xList.contains(c)) {
 					xList.remove(c);
 				}
@@ -550,6 +570,9 @@ public abstract class Critter {
 		}
 	}
 
+	/**
+	 * Updates the map data structure with the moved population of Critters
+	 */
 	private static void mapRefresh() {
 		for (Critter c : population) {
 			if (c.hasMoved) {

@@ -14,10 +14,18 @@ package assignment4;
 public class InvalidCommandException extends Exception {
     String invalidCommand;
 
+    /**
+     * Constructor for Exception
+     * @param c invalid command string
+     */
     public InvalidCommandException(String c) {
        invalidCommand = c;
     }
 
+    /**
+     * toString method
+     * @return string representation of the error
+     */
     public String toString() {
         return "invalid command: " + invalidCommand;
     }
